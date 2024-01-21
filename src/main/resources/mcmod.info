@@ -1,0 +1,18 @@
+[
+  {
+    "modid": "jeup",
+    "name": "Just Enough Update",
+    "description": "no mod update anymore",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "vfyjxf"
+    ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]

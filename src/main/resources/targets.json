@@ -1,0 +1,10 @@
+{
+  "url": {
+    "constructor": [
+      "org.cyclops.cyclopscore.tracking.Analytics$1:run()V",
+      "org.cyclops.cyclopscore.tracking.ImportantUsers:lambda$checkAll$0()V",
+      "org.cyclops.cyclopscore.tracking.Versions$1:run()V",
+      "com.buuz135.industrial.proxy.CommonProxy:readUrl(Ljava/lang/String;)Ljava/lang/String;"
+    ]
+  }
+}
