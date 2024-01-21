@@ -33,7 +33,10 @@ import java.util.zip.ZipFile;
 public class ClassProfiler {
 
     private static final List<Analyzer> ANALYZERS = Lists.newArrayList(
-            new Analyzer.Construct(Type.URL, "java/net/URL")
+            new Analyzer.Construct(Type.URL, "java/net/URL"),
+            new Analyzer.Invoke(Type.URL, false, "java/net/URL", "openConnection", null),
+            new Analyzer.Invoke(Type.URL, false, "java/net/URL", "openStream", null),
+            new Analyzer.Invoke(Type.URL, false, "java/net/URL", "getContent", null)
     );
 
 
@@ -186,7 +189,7 @@ public class ClassProfiler {
             int op;
             int tag;
 
-            public Invoke(Type type, boolean isStatic, String owner, String name, String desc) {
+            public Invoke(Type type, boolean isStatic, String owner, String name, @Nullable String desc) {
                 super(type);
                 op = isStatic ? Opcodes.INVOKESTATIC : Opcodes.INVOKEVIRTUAL;
                 tag = isStatic ? Opcodes.H_INVOKESTATIC : Opcodes.H_INVOKEVIRTUAL;
@@ -200,7 +203,7 @@ public class ClassProfiler {
                 if (insn instanceof MethodInsnNode) {
                     MethodInsnNode node = (MethodInsnNode) insn;
                     return node.getOpcode() == op && node.owner.equals(owner) &&
-                            node.name.equals(name) && node.desc.equals(desc);
+                            node.name.equals(name) && (desc == null || node.desc.equals(desc));
                 } else if (insn instanceof InvokeDynamicInsnNode) {
                     InvokeDynamicInsnNode din = (InvokeDynamicInsnNode) insn;
                     if (din.bsmArgs.length != 3) return false;
@@ -208,7 +211,7 @@ public class ClassProfiler {
                     if (arg instanceof Handle) {
                         Handle handle = (Handle) arg;
                         return handle.getTag() == tag && handle.getOwner().equals(owner) &&
-                                handle.getName().equals(name) && handle.getDesc().equals(desc);
+                                handle.getName().equals(name) && (desc == null || handle.getDesc().equals(desc));
                     }
                 }
                 return false;
