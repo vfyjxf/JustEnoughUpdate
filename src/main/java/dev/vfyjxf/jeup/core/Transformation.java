@@ -35,14 +35,14 @@ public interface Transformation {
         return ret;
     }
 
-    static boolean injectAfter(MethodNode methodNode, String constructor, AbstractInsnNode... nodes) {
+    static boolean injectAfter(MethodNode methodNode, String owner, String name, AbstractInsnNode... nodes) {
         Iterator<AbstractInsnNode> i = methodNode.instructions.iterator();
         AbstractInsnNode target = null;
         while (i.hasNext()) {
             AbstractInsnNode node = i.next();
-            if (node instanceof MethodInsnNode) {
+            if (node.getOpcode() == Opcodes.INVOKESPECIAL) {
                 MethodInsnNode methodInsn = ((MethodInsnNode) node);
-                if (methodInsn.owner.equals(constructor)) {
+                if (methodInsn.owner.equals(owner) && methodInsn.name.equals(name)) {
                     target = methodInsn;
                     break;
                 }

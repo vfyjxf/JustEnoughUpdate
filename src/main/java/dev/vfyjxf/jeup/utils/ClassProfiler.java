@@ -33,10 +33,7 @@ import java.util.zip.ZipFile;
 public class ClassProfiler {
 
     private static final List<Analyzer> ANALYZERS = Lists.newArrayList(
-            new Analyzer.Construct(Type.URL, "java/net/URL"),
-            new Analyzer.Invoke(Type.URL, false, "java/net/URL", "openConnection", null),
-            new Analyzer.Invoke(Type.URL, false, "java/net/URL", "openStream", null),
-            new Analyzer.Invoke(Type.URL, false, "java/net/URL", "getContent", null)
+            new Analyzer.Construct(Type.URL, "java/net/URL")
     );
 
 

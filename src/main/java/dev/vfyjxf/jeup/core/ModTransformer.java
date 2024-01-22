@@ -40,8 +40,8 @@ public class ModTransformer implements IClassTransformer {
                 if (targets.has(value.name)) {
                     JsonObject typed = targets.getAsJsonObject(value.name);
                     for (Operation operation : Operation.values()) {
-                        if (!typed.has(operation.name)) continue;
-                        for (JsonElement element : typed.get(operation.name).getAsJsonArray()) {
+                        if (!typed.has(operation.key)) continue;
+                        for (JsonElement element : typed.get(operation.key).getAsJsonArray()) {
                             String token = element.getAsString();
                             Target target = Target.of(value, token);
                             this.targets.computeIfAbsent(target.owner, k -> new ArrayList<>()).add(target);
@@ -66,10 +66,10 @@ public class ModTransformer implements IClassTransformer {
             for (MethodNode method : classNode.methods) {
                 for (Target target : current) {
                     if (!target.match(method)) continue;
-                    Transformation.injectAfter(method, target.type.owner, new MethodInsnNode(Opcodes.INVOKESTATIC,
+                    Transformation.injectAfter(method, target.type.owner, target.type.method, new MethodInsnNode(Opcodes.INVOKESTATIC,
                             "dev/vfyjxf/jeup/JustEnoughUpdate",
-                            "throwIOException",
-                            "()V", false));
+                            "redirectUrl",
+                            "(Ljava/net/URL;)Ljava/net/URL;", false));
                     success = true;
                 }
             }
@@ -121,14 +121,17 @@ public class ModTransformer implements IClassTransformer {
     }
 
     enum Type {
-        URL("url", "java/net/URL");
+        URL("url", "java/net/URL", "<init>"),
+        ;
 
         public final String name;
         public final String owner;
+        public final String method;
 
-        Type(String name, String owner) {
+        Type(String name, String owner, String method) {
             this.name = name;
             this.owner = owner;
+            this.method = method;
         }
     }
 
@@ -136,10 +139,10 @@ public class ModTransformer implements IClassTransformer {
         CONSTRUCT("constructor"),
         ;
 
-        private final String name;
+        private final String key;
 
-        Operation(String name) {
-            this.name = name;
+        Operation(String key) {
+            this.key = key;
         }
     }
 
